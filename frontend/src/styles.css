@@ -60,6 +60,7 @@ label > input, label > select { margin-top: 4px; }
 .muted { color: var(--muted); }
 .hint { color: var(--muted); font-size: 0.85rem; margin: 6px 0 0; }
 .auth { max-width: 400px; margin: 8vh auto; padding: 0 16px; }
+.auth-theme { display: flex; justify-content: flex-end; margin-bottom: 12px; }
 .auth form { display: grid; gap: 12px; }
 .link { border: 0; background: none; color: var(--accent); padding: 0; margin-top: 12px; }
 .shell { display: grid; grid-template-columns: 230px 1fr; min-height: 100vh; }

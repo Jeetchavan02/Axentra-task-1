@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { api, setToken } from "../api";
 import ErrorBox from "../components/ErrorBox";
+import ThemeToggle from "../components/ThemeToggle";
 
 const EMPTY = { company_name: "", full_name: "", email: "", password: "" };
 
@@ -34,6 +35,9 @@ export default function AuthPage({ onLoggedIn }) {
 
   return (
     <div className="auth">
+      <div className="auth-theme">
+        <ThemeToggle />
+      </div>
       <div className="card">
         <h1>{isRegistering ? "Register your company" : "Log in"}</h1>
         <p className="muted">Subscription Tracker</p>

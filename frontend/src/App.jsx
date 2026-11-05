@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { api, clearToken, getToken, setSessionExpiredHandler } from "./api";
+import ThemeToggle from "./components/ThemeToggle";
 import AuthPage from "./pages/AuthPage";
 import { PAGES } from "./pages";
 
@@ -40,6 +41,7 @@ export default function App() {
           <p className="email" title={user?.email}>
             {user?.email}
           </p>
+          <ThemeToggle />
           <button onClick={logOut}>Log out</button>
         </div>
       </nav>
