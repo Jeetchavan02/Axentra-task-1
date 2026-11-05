@@ -3,6 +3,7 @@ from pathlib import Path
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from sqlalchemy import URL
 
 ENV_FILE = Path(__file__).resolve().parents[2] / ".env"
 
@@ -21,9 +22,31 @@ class CORSSettings(CommonSettings):
     allowed_origins: list[str] = ["http://localhost:5173"]
 
 
+class DatabaseSettings(CommonSettings):
+    # No defaults: the app should refuse to start without an explicit database config.
+    db_user: str
+    db_password: str
+    db_host: str
+    db_port: int
+    db_name: str
+
+    @property
+    def url(self) -> URL:
+        # URL.create escapes special characters in the password.
+        return URL.create(
+            "postgresql+asyncpg",
+            username=self.db_user,
+            password=self.db_password,
+            host=self.db_host,
+            port=self.db_port,
+            database=self.db_name,
+        )
+
+
 class Settings(CommonSettings):
     app: AppSettings = Field(default_factory=AppSettings)
     cors: CORSSettings = Field(default_factory=CORSSettings)
+    db: DatabaseSettings = Field(default_factory=DatabaseSettings)
 
 
 @lru_cache
