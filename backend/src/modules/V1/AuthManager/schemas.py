@@ -1,23 +1,14 @@
-from typing import Annotated
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, StringConstraints, field_validator
-
+from app.project_schemas import Name, NormalizedEmail
 from app.security import BCRYPT_MAX_BYTES
-
-Name = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=255)]
-
-
-def _normalize_email(email: str) -> str:
-    return email.lower()
 
 
 class RegisterRequest(BaseModel):
     company_name: Name
     full_name: Name
-    email: EmailStr
+    email: NormalizedEmail
     password: str = Field(min_length=8)
-
-    _lower_email = field_validator("email")(_normalize_email)
 
     @field_validator("password")
     @classmethod
@@ -28,10 +19,8 @@ class RegisterRequest(BaseModel):
 
 
 class LoginRequest(BaseModel):
-    email: EmailStr
+    email: NormalizedEmail
     password: str = Field(max_length=1024)
-
-    _lower_email = field_validator("email")(_normalize_email)
 
 
 class UserRead(BaseModel):

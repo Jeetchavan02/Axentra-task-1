@@ -33,6 +33,9 @@ class Base(DeclarativeBase):
 
 
 class TimestampMixin:
+    # Reload updated_at within the UPDATE itself, since lazy loading isn't possible with async.
+    __mapper_args__ = {"eager_defaults": True}
+
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
