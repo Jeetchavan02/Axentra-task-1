@@ -64,7 +64,7 @@ label > input, label > select { margin-top: 4px; }
 .auth form { display: grid; gap: 12px; }
 .link { border: 0; background: none; color: var(--accent); padding: 0; margin-top: 12px; }
 .shell { display: grid; grid-template-columns: 230px 1fr; min-height: 100vh; }
-.sidebar { background: var(--surface); border-right: 1px solid var(--line); padding: 16px; display: flex; flex-direction: column; gap: 4px; }
+.sidebar { position: sticky; top: 0; height: 100vh; overflow-y: auto; background: var(--surface); border-right: 1px solid var(--line); padding: 16px; display: flex; flex-direction: column; gap: 4px; }
 .sidebar strong { margin-bottom: 12px; }
 .sidebar button { border: 0; text-align: left; background: none; }
 .sidebar button.active { background: var(--page); font-weight: 600; }
@@ -90,7 +90,7 @@ td.actions button { padding: 4px 10px; }
 .stat b { display: block; font-size: 1.6rem; margin-top: 4px; font-variant-numeric: tabular-nums; }
 @media (max-width: 720px) {
   .shell { grid-template-columns: 1fr; }
-  .sidebar { flex-direction: row; flex-wrap: wrap; align-items: center; border-right: 0; border-bottom: 1px solid var(--line); }
+  .sidebar { position: static; height: auto; flex-direction: row; flex-wrap: wrap; align-items: center; border-right: 0; border-bottom: 1px solid var(--line); }
   .sidebar strong { margin: 0 8px 0 0; width: 100%; }
   .sidebar .account { margin: 0; width: 100%; }
 }
