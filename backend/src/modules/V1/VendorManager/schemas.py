@@ -1,19 +1,21 @@
 from datetime import datetime
 from typing import Annotated
 
-from pydantic import AfterValidator, BaseModel, ConfigDict, HttpUrl
+from pydantic import AfterValidator, BaseModel, ConfigDict, HttpUrl, TypeAdapter
 
 from app.project_schemas import Name
 
+_http_url = TypeAdapter(HttpUrl)
 
-def _url_to_stored_text(url: HttpUrl) -> str:
-    text = str(url)
+
+def _validate_website(value: str) -> str:
+    text = str(_http_url.validate_python(value))
     if len(text) > 500:
         raise ValueError("Website must be at most 500 characters")
     return text
 
 
-Website = Annotated[HttpUrl, AfterValidator(_url_to_stored_text)]
+Website = Annotated[str, AfterValidator(_validate_website)]
 
 
 class VendorWrite(BaseModel):
