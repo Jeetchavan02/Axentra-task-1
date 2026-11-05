@@ -102,7 +102,7 @@ Monthly spend counts active plans, with yearly plans at one twelfth of their pri
 curl -s "$BASE/reports/monthly-spend" -H "Authorization: Bearer $TOKEN"
 ```
 
-Active plans renewing in the next `days` (1 to 365, default 30):
+Active plans renewing in the next `days` (1 to 365, default 30). The example plan renews in 2030, so this returns an empty list until you create a plan with a nearer `renewal_date`:
 
 ```bash
 curl -s "$BASE/reports/upcoming-renewals?days=365" -H "Authorization: Bearer $TOKEN"
