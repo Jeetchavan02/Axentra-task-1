@@ -1,12 +1,7 @@
 from fastapi import APIRouter
 
-from app.project_schemas import APIResponse
+from modules.V1.AuthManager.routers import router as auth_router
 
 router = APIRouter()
 
-# Feature module routers are attached here as they are built.
-
-
-@router.get("/ping", tags=["monitoring"])
-async def ping() -> APIResponse[dict[str, str]]:
-    return APIResponse[dict[str, str]].success(data={"api": "v1"})
+router.include_router(auth_router, prefix="/auth", tags=["auth"])
