@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import ResourcePage from "../components/ResourcePage";
+import SeatsPanel from "../components/SeatsPanel";
 import { useOptions } from "../hooks";
 
 const CYCLES = [
@@ -19,6 +20,8 @@ export default function SubscriptionsPage() {
   const vendorName = (id) => vendors.find((vendor) => vendor.id === id)?.name ?? `#${id}`;
 
   return (
+    <>
+      {selected && <SeatsPanel subscription={selected} onClose={() => setSelected(null)} />}
     <ResourcePage
       title="Subscriptions"
       path="/subscriptions"
@@ -48,6 +51,7 @@ export default function SubscriptionsPage() {
         { label: "Renews", key: "renewal_date" },
         { label: "Status", key: "status" },
       ]}
+      rowActions={(row) => <button onClick={() => setSelected(row)}>Seats</button>}
       toBody={(values) => ({
         vendor_id: Number(values.vendor_id),
         plan_name: values.plan_name,
@@ -58,5 +62,6 @@ export default function SubscriptionsPage() {
         status: values.status,
       })}
     />
+    </>
   );
 }
