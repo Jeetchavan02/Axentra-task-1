@@ -1,6 +1,7 @@
 from fastapi import HTTPException, status
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.database import commit_or_conflict
 
 from .dao import EmployeeDAO
 from .models import Employee
@@ -22,7 +23,7 @@ class EmployeeService:
     async def create(db: AsyncSession, company_id: int, payload: EmployeeWrite) -> Employee:
         employee = Employee(company_id=company_id, **payload.model_dump())
         db.add(employee)
-        await _commit_or_conflict(db, EMAIL_TAKEN)
+        await commit_or_conflict(db, EMAIL_TAKEN)
         return employee
 
     @staticmethod
@@ -32,20 +33,11 @@ class EmployeeService:
         employee = await EmployeeService.get(db, company_id, employee_id)
         employee.full_name = payload.full_name
         employee.email = payload.email
-        await _commit_or_conflict(db, EMAIL_TAKEN)
+        await commit_or_conflict(db, EMAIL_TAKEN)
         return employee
 
     @staticmethod
     async def delete(db: AsyncSession, company_id: int, employee_id: int) -> None:
         employee = await EmployeeService.get(db, company_id, employee_id)
         await db.delete(employee)
-        await _commit_or_conflict(db, "Employee holds seats and can't be deleted")
-
-
-async def _commit_or_conflict(db: AsyncSession, message: str) -> None:
-    """Database constraints are the final check, which also covers simultaneous requests."""
-    try:
-        await db.commit()
-    except IntegrityError as exc:
-        await db.rollback()
-        raise HTTPException(status.HTTP_409_CONFLICT, message) from exc
+        await commit_or_conflict(db, "Employee holds seats and can't be deleted")

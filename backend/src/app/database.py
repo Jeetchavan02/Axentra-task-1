@@ -2,8 +2,9 @@ from collections.abc import AsyncGenerator
 from datetime import datetime
 from typing import Annotated
 
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 from sqlalchemy import DateTime, MetaData, func
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -49,3 +50,12 @@ async def get_db() -> AsyncGenerator[AsyncSession]:
 
 
 DbSession = Annotated[AsyncSession, Depends(get_db)]
+
+
+async def commit_or_conflict(db: AsyncSession, message: str) -> None:
+    """Database constraints are the final check, which also covers simultaneous requests."""
+    try:
+        await db.commit()
+    except IntegrityError as exc:
+        await db.rollback()
+        raise HTTPException(status.HTTP_409_CONFLICT, message) from exc
