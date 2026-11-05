@@ -7,6 +7,7 @@ from sqlalchemy import func, select, text
 
 from app.database import SessionFactory
 from app.settings import get_settings
+from modules.V1.AuthManager.dao import AuthDAO
 from modules.V1.models import Company, User
 
 REGISTER = "/api/v1/auth/register"
@@ -89,6 +90,21 @@ async def test_simultaneous_registrations_create_one_account(client):
     assert sorted(r.status_code for r in responses) == [201, 409, 409, 409, 409]
     assert await count(User) == 1
     assert await count(Company) == 1, "Losing requests must roll back their company"
+
+
+async def test_unique_constraint_race_returns_409_and_rolls_back(client, monkeypatch):
+    """Forces the race: the pre-check sees no user, so only the constraint can stop the insert."""
+    await client.post(REGISTER, json=register_body())
+
+    async def email_looks_free(*_):
+        return None
+
+    monkeypatch.setattr(AuthDAO, "get_user_by_email", email_looks_free)
+    response = await client.post(REGISTER, json=register_body())
+
+    assert response.status_code == 409
+    assert await count(User) == 1
+    assert await count(Company) == 1, "The losing request must roll back its company"
 
 
 @pytest.mark.parametrize(
