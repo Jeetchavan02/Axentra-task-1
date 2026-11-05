@@ -5,13 +5,29 @@
   --surface: #ffffff;
   --page: #f5f6f8;
   --accent: #1f5fbf;
+  --on-accent: #ffffff;
   --danger: #b3261e;
+  --danger-surface: #fdf0ef;
+  color-scheme: light;
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   color: var(--ink);
   background: var(--page);
 }
+:root[data-theme="dark"] {
+  --ink: #e6e9ef;
+  --muted: #a3acbb;
+  --line: #343c4b;
+  --surface: #1c212b;
+  --page: #12151b;
+  --accent: #7ea8ef;
+  --on-accent: #10151f;
+  --danger: #f2908a;
+  --danger-surface: #3a1f1e;
+  /* Makes native controls such as date pickers and dropdowns dark too. */
+  color-scheme: dark;
+}
 * { box-sizing: border-box; }
-body { margin: 0; }
+body { margin: 0; background: var(--page); }
 h1 { font-size: 1.4rem; margin: 0; }
 h2 { font-size: 1.05rem; margin: 0 0 12px; }
 button, input, select { font: inherit; }
@@ -33,13 +49,13 @@ button {
 }
 button:hover:not(:disabled) { border-color: var(--muted); }
 button:disabled { opacity: 0.5; cursor: default; }
-button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 button.danger { color: var(--danger); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 label { display: block; font-size: 0.85rem; color: var(--muted); }
 label > input, label > select { margin-top: 4px; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
-.error { color: var(--danger); background: #fdf0ef; border-radius: 6px; padding: 8px 12px; margin-bottom: 12px; }
+.error { color: var(--danger); background: var(--danger-surface); border-radius: 6px; padding: 8px 12px; margin-bottom: 12px; }
 .error ul { margin: 4px 0 0; padding-left: 18px; }
 .muted { color: var(--muted); }
 .hint { color: var(--muted); font-size: 0.85rem; margin: 6px 0 0; }
