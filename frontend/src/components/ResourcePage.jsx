@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { api } from "../api";
 import ErrorBox from "./ErrorBox";
@@ -52,13 +52,18 @@ export default function ResourcePage({
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
 
+  const latestRequest = useRef(0);
+
   const load = useCallback(async () => {
+    // Only the newest request may update the screen, so a slow older search can't overwrite it.
+    const request = ++latestRequest.current;
     try {
-      setPage(
-        await api(path, { params: { limit: PAGE_SIZE, offset, search, ...filterValues } }),
-      );
+      const result = await api(path, {
+        params: { limit: PAGE_SIZE, offset, search, ...filterValues },
+      });
+      if (request === latestRequest.current) setPage(result);
     } catch (err) {
-      setError(err);
+      if (request === latestRequest.current) setError(err);
     }
   }, [path, offset, search, filterValues]);
 
