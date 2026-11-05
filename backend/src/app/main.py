@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.project_schemas import APIResponse
 from app.settings import get_settings
 
 settings = get_settings()
@@ -17,5 +18,5 @@ app.add_middleware(
 
 
 @app.get("/health", tags=["monitoring"])
-async def health_check() -> dict[str, str]:
-    return {"status": "ok"}
+async def health_check() -> APIResponse[dict[str, str]]:
+    return APIResponse[dict[str, str]].success(data={"status": "ok"})
