@@ -46,12 +46,14 @@ label > input, label > select { margin-top: 4px; }
 .auth { max-width: 400px; margin: 8vh auto; padding: 0 16px; }
 .auth form { display: grid; gap: 12px; }
 .link { border: 0; background: none; color: var(--accent); padding: 0; margin-top: 12px; }
-.shell { display: grid; grid-template-columns: 200px 1fr; min-height: 100vh; }
+.shell { display: grid; grid-template-columns: 230px 1fr; min-height: 100vh; }
 .sidebar { background: var(--surface); border-right: 1px solid var(--line); padding: 16px; display: flex; flex-direction: column; gap: 4px; }
 .sidebar strong { margin-bottom: 12px; }
 .sidebar button { border: 0; text-align: left; background: none; }
 .sidebar button.active { background: var(--page); font-weight: 600; }
-.sidebar .account { margin-top: auto; font-size: 0.85rem; color: var(--muted); overflow-wrap: anywhere; }
+.sidebar .account { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line); display: grid; gap: 8px; font-size: 0.85rem; color: var(--muted); }
+.sidebar .account .email { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sidebar .account button { border: 1px solid var(--line); text-align: center; width: 100%; color: var(--ink); }
 main { padding: 24px; min-width: 0; }
 .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px; }
 .toolbar h1 { margin-right: auto; }

@@ -37,7 +37,9 @@ export default function App() {
           </button>
         ))}
         <div className="account">
-          <p>{user?.email}</p>
+          <p className="email" title={user?.email}>
+            {user?.email}
+          </p>
           <button onClick={logOut}>Log out</button>
         </div>
       </nav>
