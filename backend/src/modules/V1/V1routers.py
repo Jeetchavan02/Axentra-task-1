@@ -1,7 +1,9 @@
 from fastapi import APIRouter
 
 from modules.V1.AuthManager.routers import router as auth_router
+from modules.V1.VendorManager.routers import router as vendor_router
 
 router = APIRouter()
 
 router.include_router(auth_router, prefix="/auth", tags=["auth"])
+router.include_router(vendor_router, prefix="/vendors", tags=["vendors"])
