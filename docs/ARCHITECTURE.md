@@ -64,8 +64,16 @@ This project follows the layout and layers of the reference template, with its o
 | Each database helper opens its own session | One session per request |
 | Redis, Celery, ARQ, Prometheus, second database | Left out, as this project doesn't need them |
 
+## Frontend
+
+The React app in `frontend/` is a thin client for testing the API, and all rules stay in the backend. `src/api.js` adds the token and turns error responses into readable messages. `ResourcePage` provides list, search, create, edit and delete from a field config, and each screen supplies its own config.
+
+The token is kept in `sessionStorage`, so closing the tab logs the user out. A 401 on any request returns to the login screen.
+
 ## Known limits
 
+- **Frontend tests.** The frontend has no automated tests. It was checked by hand in a browser.
+- **Dropdown size.** The vendor and employee dropdowns load the first 100 records.
 - **No refresh tokens or logout.** Tokens last 60 minutes and can't be revoked individually.
 - **No roles.** Every user in a company can do everything.
 - **One currency.** Monthly spend is a simple total.
