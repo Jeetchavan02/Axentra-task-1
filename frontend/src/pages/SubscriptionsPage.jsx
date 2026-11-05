@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import ResourcePage from "../components/ResourcePage";
 import SeatsPanel from "../components/SeatsPanel";
@@ -15,13 +15,17 @@ const STATUSES = [
 
 export default function SubscriptionsPage() {
   const vendors = useOptions("/vendors");
-  const [selected, setSelected] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
+  const closeSeats = useCallback(() => setSelectedId(null), []);
   const vendorOptions = vendors.map((vendor) => ({ value: vendor.id, label: vendor.name }));
   const vendorName = (id) => vendors.find((vendor) => vendor.id === id)?.name ?? `#${id}`;
 
   return (
     <>
-      {selected && <SeatsPanel subscription={selected} onClose={() => setSelected(null)} />}
+      {selectedId && (
+        <SeatsPanel subscriptionId={selectedId} reloadKey={reloadKey} onClose={closeSeats} />
+      )}
     <ResourcePage
       title="Subscriptions"
       path="/subscriptions"
@@ -51,7 +55,8 @@ export default function SubscriptionsPage() {
         { label: "Renews", key: "renewal_date" },
         { label: "Status", key: "status" },
       ]}
-      rowActions={(row) => <button onClick={() => setSelected(row)}>Seats</button>}
+      rowActions={(row) => <button onClick={() => setSelectedId(row.id)}>Seats</button>}
+      onChanged={() => setReloadKey((key) => key + 1)}
       toBody={(values) => ({
         vendor_id: Number(values.vendor_id),
         plan_name: values.plan_name,

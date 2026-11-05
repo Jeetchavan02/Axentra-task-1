@@ -4,8 +4,9 @@ import { api } from "../api";
 import { useOptions } from "../hooks";
 import ErrorBox from "./ErrorBox";
 
-export default function SeatsPanel({ subscription, onClose }) {
-  const url = `/subscriptions/${subscription.id}/seats`;
+export default function SeatsPanel({ subscriptionId, reloadKey, onClose }) {
+  const url = `/subscriptions/${subscriptionId}/seats`;
+  const [subscription, setSubscription] = useState(null);
   const employees = useOptions("/employees");
   const [seats, setSeats] = useState([]);
   const [employeeId, setEmployeeId] = useState("");
@@ -25,6 +26,13 @@ export default function SeatsPanel({ subscription, onClose }) {
     setEmployeeId("");
     load();
   }, [load]);
+
+  // Re-read after edits on the list below, so the plan name and limit stay current.
+  useEffect(() => {
+    api(`/subscriptions/${subscriptionId}`)
+      .then(setSubscription)
+      .catch((err) => (err.status === 404 ? onClose() : setError(err)));
+  }, [subscriptionId, reloadKey, onClose]);
 
   async function run(action) {
     setError(null);
@@ -46,6 +54,8 @@ export default function SeatsPanel({ subscription, onClose }) {
 
   const holders = new Set(seats.map((seat) => seat.employee_id));
   const available = employees.filter((employee) => !holders.has(employee.id));
+
+  if (!subscription) return null;
 
   return (
     <section className="card" aria-label="Seats">
