@@ -25,6 +25,7 @@ export default function ReportsPage() {
         <h1>Reports</h1>
       </div>
       <ErrorBox error={error} />
+      {!spend && !error && <p className="muted">Loading...</p>}
 
       {spend && (
         <>
@@ -81,6 +82,7 @@ export default function ReportsPage() {
             ))}
           </select>
         </div>
+        {!renewals && !error && <p className="muted">Loading...</p>}
         {renewals?.items.length === 0 && <p className="muted">Nothing renews in this period.</p>}
         {renewals?.items.length > 0 && (
           <div className="table-wrap">
