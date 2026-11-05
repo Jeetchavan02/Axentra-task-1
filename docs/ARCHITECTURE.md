@@ -81,4 +81,3 @@ The token is kept in `sessionStorage`, so closing the tab logs the user out. A 4
 - **Cancelled subscriptions.** They reject new seats, but existing seats stay until removed, and those seats block deletion.
 - **Rounding.** The monthly total can differ from the rounded per-vendor lines by a cent.
 - **Dates.** Renewal windows use the UTC date.
-- **Conflict message.** If a vendor is deleted at the moment a subscription is created for it, the request is safely rejected, but the message says the plan is a duplicate.
