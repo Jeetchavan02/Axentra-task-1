@@ -13,7 +13,7 @@ async def make_vendor(client, headers, name="Slack") -> int:
     return response.json()["data"]["id"]
 
 
-def body(vendor_id: int, **overrides) -> dict:
+def body(vendor_id: int, /, **overrides) -> dict:
     return {
         "vendor_id": vendor_id,
         "plan_name": "Business",
@@ -98,7 +98,7 @@ async def test_invalid_input_is_rejected_on_create_and_update(client, make_compa
     headers = await make_company()
     vendor_id = await make_vendor(client, headers)
     existing = await make_subscription(client, headers, vendor_id)
-    bad = body(vendor_id, **{"plan_name": "Other"} | overrides)
+    bad = body(vendor_id, plan_name="Other") | overrides
 
     assert (await client.post(URL, json=bad, headers=headers)).status_code == 422
     assert (
