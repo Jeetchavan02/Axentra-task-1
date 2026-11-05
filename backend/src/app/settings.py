@@ -43,10 +43,18 @@ class DatabaseSettings(CommonSettings):
         )
 
 
+class SecuritySettings(CommonSettings):
+    # No default: a known secret would let anyone forge login tokens.
+    jwt_secret: str = Field(min_length=32)
+    jwt_algorithm: str = "HS256"
+    access_token_expire_minutes: int = 60
+
+
 class Settings(CommonSettings):
     app: AppSettings = Field(default_factory=AppSettings)
     cors: CORSSettings = Field(default_factory=CORSSettings)
     db: DatabaseSettings = Field(default_factory=DatabaseSettings)
+    security: SecuritySettings = Field(default_factory=SecuritySettings)
 
 
 @lru_cache
