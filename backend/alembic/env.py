@@ -8,13 +8,13 @@ from sqlalchemy.pool import NullPool
 
 from app.database import Base
 from app.settings import get_settings
+from modules.V1 import models  # noqa: F401  (registers every table on Base.metadata)
 
 config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # Autogenerate compares the database against this metadata.
-# Module models get imported here as they are added.
 target_metadata = Base.metadata
 
 # The URL comes from app settings, so credentials never live in alembic.ini.
