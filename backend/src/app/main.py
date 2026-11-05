@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.error_handlers import register_error_handlers
 from app.project_schemas import APIResponse
+from app.routers import register_routers
 from app.settings import get_settings
 
 settings = get_settings()
@@ -18,6 +19,7 @@ app.add_middleware(
 )
 
 register_error_handlers(app)
+register_routers(app)
 
 
 @app.get("/health", tags=["monitoring"])
