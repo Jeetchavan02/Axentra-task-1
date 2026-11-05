@@ -10,3 +10,8 @@ LOGIN = {
         "endpoints."
     ),
 }
+
+ME = {
+    "summary": "Current user",
+    "description": "Returns the logged-in user. Requires a valid token.",
+}
