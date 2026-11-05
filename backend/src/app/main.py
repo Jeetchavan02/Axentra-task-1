@@ -1,6 +1,19 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title="Axentra Task 1", version="0.1.0")
+from app.settings import get_settings
+
+settings = get_settings()
+
+app = FastAPI(title=settings.app.project_name, version=settings.app.api_version)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors.allowed_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/health", tags=["monitoring"])
