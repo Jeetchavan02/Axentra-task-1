@@ -10,13 +10,15 @@ from app.project_schemas import APIResponse
 logger = logging.getLogger("uvicorn.error")
 
 
-def _error_response(message: str, code: int, data: object = None) -> JSONResponse:
+def _error_response(
+    message: str, code: int, data: object = None, headers: dict[str, str] | None = None
+) -> JSONResponse:
     body = APIResponse.error(message=message, code=code, data=data)
-    return JSONResponse(status_code=code, content=body.model_dump())
+    return JSONResponse(status_code=code, content=body.model_dump(), headers=headers)
 
 
 async def _handle_http_exception(_: Request, exc: StarletteHTTPException) -> JSONResponse:
-    return _error_response(str(exc.detail), exc.status_code)
+    return _error_response(str(exc.detail), exc.status_code, headers=exc.headers)
 
 
 async def _handle_validation_error(_: Request, exc: RequestValidationError) -> JSONResponse:
