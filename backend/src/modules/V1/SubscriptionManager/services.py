@@ -9,6 +9,7 @@ from .models import Subscription
 from .schemas import SubscriptionWrite
 
 DUPLICATE_PLAN = "This vendor already has a subscription with this plan"
+VENDOR_NOT_FOUND = "Vendor not found"
 
 
 class SubscriptionService:
@@ -23,14 +24,14 @@ class SubscriptionService:
     async def _require_vendor(db: AsyncSession, company_id: int, vendor_id: int) -> None:
         # Same answer for another company's vendor, so its existence isn't revealed.
         if await VendorDAO.get(db, company_id, vendor_id) is None:
-            raise HTTPException(status.HTTP_404_NOT_FOUND, "Vendor not found")
+            raise HTTPException(status.HTTP_404_NOT_FOUND, VENDOR_NOT_FOUND)
 
     @staticmethod
     async def create(db: AsyncSession, company_id: int, payload: SubscriptionWrite) -> Subscription:
         await SubscriptionService._require_vendor(db, company_id, payload.vendor_id)
         subscription = Subscription(company_id=company_id, **payload.model_dump())
         db.add(subscription)
-        await commit_or_conflict(db, DUPLICATE_PLAN)
+        await commit_or_conflict(db, DUPLICATE_PLAN, missing_parent=VENDOR_NOT_FOUND)
         return subscription
 
     @staticmethod
@@ -50,7 +51,7 @@ class SubscriptionService:
             )
         for field, value in payload.model_dump().items():
             setattr(subscription, field, value)
-        await commit_or_conflict(db, DUPLICATE_PLAN)
+        await commit_or_conflict(db, DUPLICATE_PLAN, missing_parent=VENDOR_NOT_FOUND)
         return subscription
 
     @staticmethod

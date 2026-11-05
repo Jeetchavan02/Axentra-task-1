@@ -245,3 +245,24 @@ async def test_seat_limit_cannot_drop_below_seats_in_use(client, make_company, n
     )
 
     assert response.status_code == expected
+
+
+@pytest.mark.parametrize("method", ["post", "put"])
+async def test_vendor_deleted_during_request_returns_404(client, make_company, monkeypatch, method):
+    headers = await make_company()
+    vendor_id = await make_vendor(client, headers)
+    subscription = await make_subscription(client, headers, vendor_id)
+
+    # The vendor check passes, as if the vendor were deleted just after it ran.
+    async def vendor_still_there(*_):
+        return object()
+
+    monkeypatch.setattr("modules.V1.VendorManager.dao.VendorDAO.get", vendor_still_there)
+    gone = body(999999, plan_name="Other")
+    if method == "post":
+        response = await client.post(URL, json=gone, headers=headers)
+    else:
+        response = await client.put(f"{URL}/{subscription['id']}", json=gone, headers=headers)
+
+    assert response.status_code == 404
+    assert response.json()["message"] == "Vendor not found"

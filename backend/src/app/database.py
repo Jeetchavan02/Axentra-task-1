@@ -52,10 +52,19 @@ async def get_db() -> AsyncGenerator[AsyncSession]:
 DbSession = Annotated[AsyncSession, Depends(get_db)]
 
 
-async def commit_or_conflict(db: AsyncSession, message: str) -> None:
-    """Database constraints are the final check, which also covers simultaneous requests."""
+FOREIGN_KEY_VIOLATION = "23503"
+
+
+async def commit_or_conflict(db: AsyncSession, message: str, missing_parent: str = "") -> None:
+    """Database constraints are the final check, which also covers simultaneous requests.
+
+    Pass missing_parent when a referenced record could be deleted during the request, so that
+    case returns a 404 with this message instead of the conflict message.
+    """
     try:
         await db.commit()
     except IntegrityError as exc:
         await db.rollback()
+        if missing_parent and getattr(exc.orig, "sqlstate", None) == FOREIGN_KEY_VIOLATION:
+            raise HTTPException(status.HTTP_404_NOT_FOUND, missing_parent) from exc
         raise HTTPException(status.HTTP_409_CONFLICT, message) from exc
