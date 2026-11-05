@@ -175,7 +175,9 @@ export default function ResourcePage({
       )}
 
       {page && page.items.length === 0 && (
-        <p className="muted">{search ? "No matches." : "Nothing here yet. Click Add to create one."}</p>
+        <p className="muted">{search || Object.values(filterValues).some(Boolean)
+            ? "No matches."
+            : "Nothing here yet. Click Add to create one."}</p>
       )}
 
       {page && page.items.length > 0 && (
