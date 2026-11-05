@@ -1,0 +1,22 @@
+# Secrets (this repo is public): commit .env.example only
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Frontend
+node_modules/
+dist/
+
+# OS and editors
+.DS_Store
+.idea/
+.vscode/
