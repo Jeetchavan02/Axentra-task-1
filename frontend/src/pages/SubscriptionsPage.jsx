@@ -37,6 +37,7 @@ export default function SubscriptionsPage() {
           required: true,
           options: vendorOptions,
           placeholder: "Choose a vendor",
+          emptyHint: "No vendors yet. Add one on the Vendors screen first.",
         },
         { name: "plan_name", label: "Plan", required: true },
         { name: "price", label: "Price per cycle", type: "number", min: 0, step: "0.01", required: true },

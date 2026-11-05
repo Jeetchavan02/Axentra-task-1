@@ -82,6 +82,9 @@ export default function SeatsPanel({ subscriptionId, reloadKey, onClose }) {
         </select>
         <button className="primary">Assign seat</button>
       </form>
+      {employees.length === 0 && (
+        <p className="hint">No employees yet. Add them on the Employees screen first.</p>
+      )}
       {seats.length === 0 ? (
         <p className="muted">No seats assigned.</p>
       ) : (

@@ -27,6 +27,7 @@ function Field({ field, value, onChange }) {
       ) : (
         <input {...props} type={field.type ?? "text"} min={field.min} step={field.step} />
       )}
+      {field.options?.length === 0 && field.emptyHint && <p className="hint">{field.emptyHint}</p>}
     </label>
   );
 }
