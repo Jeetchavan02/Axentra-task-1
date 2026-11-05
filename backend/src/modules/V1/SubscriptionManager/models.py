@@ -65,5 +65,7 @@ class Subscription(TimestampMixin, Base):
     seat_limit: Mapped[int]
     renewal_date: Mapped[date] = mapped_column(Date)
     status: Mapped[SubscriptionStatus] = mapped_column(
-        _string_enum(SubscriptionStatus, "status"), default=SubscriptionStatus.ACTIVE
+        _string_enum(SubscriptionStatus, "status"),
+        default=SubscriptionStatus.ACTIVE,
+        server_default=SubscriptionStatus.ACTIVE.value,
     )
