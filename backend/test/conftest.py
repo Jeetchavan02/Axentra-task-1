@@ -60,3 +60,20 @@ async def client():
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as async_client:
         yield async_client
+
+
+@pytest.fixture
+def make_company(client):
+    """Register a new company and return auth headers for its first user."""
+    count = 0
+
+    async def _make_company() -> dict[str, str]:
+        nonlocal count
+        count += 1
+        credentials = {"email": f"owner{count}@acme.io", "password": "correct-horse-battery"}
+        body = {"company_name": f"Company {count}", "full_name": "Owner", **credentials}
+        assert (await client.post("/api/v1/auth/register", json=body)).status_code == 201
+        login = await client.post("/api/v1/auth/login", json=credentials)
+        return {"Authorization": f"Bearer {login.json()['data']['access_token']}"}
+
+    return _make_company
